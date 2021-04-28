@@ -1,55 +1,38 @@
-const { fork } = require('child_process');
+const app = require('express')();
+const {fork} = require('child_process');
 
-const child = fork('child.js');
+//http://localhost:3000/isPrime?number=29355126551
 
-child.send('Hey son');
+app.get('/isPrime', (req, res) => {
+    const childProcess = fork('./isPrime.js');
+    childProcess.send({'number':parseInt(req.query.number)})
+    childProcess.on('message', message => res.send(message))
+    // const response = isPrime(parseInt(req.query.number));
+    // res.send(response);
+})
 
-child.on('exit', () => {
-  console.log(`child process killed`);
-  child.kill();
-});
+app.listen(3000, () => console.log('listening on 3000'));
 
-child.on('message', (childData) => {
-  console.log(`child says: ${childData.toString()}`);
-  child.kill();
-});
-
-// const exec = require('child_process').exec;
-// exec('start chrome https://youtu.be/dQw4w9WgXcQ');
+// const isPrime = (number) => {
+//     let startTime = new Date();
+//     let endTime = new Date();
+//     let isPrime = true;
 //
-// exec('type index.js', (err, stdout, stderr) => {
-//   console.log(stdout);
-// });
+//     for (let i = 3; i < number; i++) {
+//         if (number % i === 0) {
+//             endTime = new Date();
+//             isPrime = false;
+//             break;
+//         }
+//     }
 //
+//     if (isPrime) {
+//         endTime = new Date();
+//     }
 //
-//
-// const spawn = require('child_process').spawn;
-//
-// if (process.argv[2] === 'child') {
-//   console.log('hello from inside child process');
-// } else {
-//   const cp = spawn(process.execPath, [__filename, 'child']);
-//   cp.stdout.on('data', (data) => {
-//     console.log('child says: ' + data.toString());
-//   });
+//     return {
+//         "number: ": number,
+//         "isPrime: ": isPrime,
+//         "time: ": endTime.getTime() - startTime.getTime()
+//     }
 // }
-
-// const ask = () => {
-//   process.stdout.write('Enter your name\n');
-// };
-//
-// process.stdin.on('data', (data) => {
-//   if (data.toString().trim() === 'stop') {
-//     process.exit();
-//   }
-//   process.stdout.write('Hi ' +
-//     data.toString().trim() + '\n');
-//   ask();
-// });
-//
-// process.on('exit', () => {
-//     process.stdout.write('Bye');
-//   }
-// );
-//
-// ask();
