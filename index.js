@@ -1,7 +1,7 @@
 const app = require('express')();
 const {fork} = require('child_process');
 
-//http://localhost:3000/isPrime?number=29355126551
+//http://localhost:3000/isPrime?number=2190315619
 
 app.get('/isPrime', (req, res) => {
     const childProcess = fork('./isPrime.js');
